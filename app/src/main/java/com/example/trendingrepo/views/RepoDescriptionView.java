@@ -65,21 +65,33 @@ public class RepoDescriptionView extends ConstraintLayout {
         addView(description);
         addView(layout);
 
+        setDescription(repository);
+        setLanguage(repository);
+        starText.setText(Integer.toString(repository.getStars()));
+        forkText.setText(Integer.toString(repository.getForks()));
+    }
+
+    private void setDescription(Repository repository) {
+        if (repository.getDescription() == null) {
+            description.setVisibility(GONE);
+        } else {
+            description.setVisibility(VISIBLE);
+            description.setText(repository.getDescription());
+        }
+    }
+
+    private void setLanguage(Repository repository) {
         if (repository.getLanguage() == null) {
             languageImage.setVisibility(GONE);
             languageText.setVisibility(GONE);
         } else {
             languageImage.setVisibility(VISIBLE);
             languageText.setVisibility(VISIBLE);
-        }
-
-        description.setText(repository.getDescription());
-        languageText.setText(repository.getLanguage());
-        starText.setText(Integer.toString(repository.getStars()));
-        forkText.setText(Integer.toString(repository.getForks()));
-        if (repository.getLanguageColor() != null) {
-            int color = Color.parseColor(repository.getLanguageColor());
-            languageImage.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            languageText.setText(repository.getLanguage());
+            if (repository.getLanguageColor() != null) {
+                int color = Color.parseColor(repository.getLanguageColor());
+                languageImage.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            }
         }
     }
 

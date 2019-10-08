@@ -3,15 +3,20 @@ package com.example.trendingrepo.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.trendingrepo.R;
+import com.example.trendingrepo.activities.RepositoryActivity;
 import com.example.trendingrepo.models.Repository;
+import com.example.trendingrepo.utils.Utils;
 import com.example.trendingrepo.views.RepoDescriptionView;
 
 import java.util.ArrayList;
@@ -27,7 +32,9 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
     private List<Repository> repositories;
-    private int selectedItem;
+    private int selectedItem = -1;
+
+    private static final String TAG = "Repository Adapter";
 
     public RepositoryAdapter(Context context) {
         this.context = context;
@@ -59,11 +66,19 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 .into(holder.profileImage);
         holder.repoName.setText(current.getRepoName());
         holder.repoDescriptionView.createView(current);
-//        if (position == selectedItem) {
+        if (position == selectedItem) {
             holder.repoDescriptionView.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.repoDescriptionView.setVisibility(View.GONE);
-//        }
+        } else {
+            holder.repoDescriptionView.setVisibility(View.GONE);
+        }
+    }
+
+    public int getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(int pos) {
+        selectedItem = pos;
     }
 
     @Override
@@ -71,7 +86,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return repositories.size();
     }
 
-    class RepoViewHolder extends RecyclerView.ViewHolder {
+    class RepoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView profileImage;
         private TextView profileName;
@@ -84,6 +99,20 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             profileName = itemView.findViewById(R.id.profile_name);
             repoName = itemView.findViewById(R.id.repo_name);
             repoDescriptionView = itemView.findViewById(R.id.item_repo_description);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int itemPos = this.getLayoutPosition();
+            if (itemPos > repositories.size() || itemPos < 0) {
+                Utils.printLog(TAG, "Invalid item position on click :: " + itemPos + " when list size :: " + repositories.size());
+                return;
+            }
+            selectedItem = (itemPos == selectedItem) ? -1 : itemPos;
+            TransitionManager.beginDelayedTransition(repoDescriptionView);
+            notifyDataSetChanged();
         }
     }
 

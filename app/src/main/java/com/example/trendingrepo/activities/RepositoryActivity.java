@@ -1,5 +1,6 @@
 package com.example.trendingrepo.activities;
 
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,10 @@ public class RepositoryActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RepositoryAdapter adapter;
+    private int savedPosition;
+
+    private static final String LIST_SCROLL_POSITION = "position";
+    private static final String LIST_EXPANDED_POSITION = "expandedPosition";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +34,24 @@ public class RepositoryActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RepositoryAdapter(this);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+
+        adapter = new RepositoryAdapter(this);
         recyclerView.setAdapter(adapter);
+
+        if (savedInstanceState != null) {
+            savedPosition = savedInstanceState.getInt(LIST_SCROLL_POSITION);
+            adapter.setSelectedItem(savedInstanceState.getInt(LIST_EXPANDED_POSITION));
+        }
         fetchRepositories();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+        outState.putInt(LIST_SCROLL_POSITION, layoutManager.findFirstVisibleItemPosition());
+        outState.putInt(LIST_EXPANDED_POSITION, adapter.getSelectedItem());
+        super.onSaveInstanceState(outState);
     }
 
     private void fetchRepositories() {
@@ -41,6 +60,9 @@ public class RepositoryActivity extends AppCompatActivity {
             public void onSuccess(List<Repository> repos) {
                 adapter.setRepositories(repos);
                 adapter.notifyDataSetChanged();
+                if (savedPosition >= 0 && savedPosition < adapter.getItemCount()) {
+                    recyclerView.scrollToPosition(savedPosition);
+                }
             }
 
             @Override
