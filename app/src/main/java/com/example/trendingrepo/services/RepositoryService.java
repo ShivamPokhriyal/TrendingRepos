@@ -33,8 +33,8 @@ public class RepositoryService {
             Repository[] repos = repositoryNetworkService.fetchRepositories();
             if (repos != null) {
                 repositoryDBService.addRepositories(repos);
+                return Arrays.asList(repos);
             }
-            return Arrays.asList(repos);
         }
         return repositories;
     }

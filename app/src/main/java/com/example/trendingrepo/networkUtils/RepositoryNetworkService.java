@@ -19,6 +19,9 @@ public class RepositoryNetworkService {
         HttpRequestUtils requestUtils = new HttpRequestUtils();
         try {
             String response = requestUtils.getResponse(REPOSITORY_URL, "FETCH_REPOSITORY");
+            if (response == null) {
+                return null;
+            }
             JsonParser parser = new JsonParser();
             String jsonArray = parser.parse(response).getAsJsonArray().toString();
             Repository[] repositories = (Repository[]) GsonUtils.getObjectFromJson(jsonArray, Repository[].class);
