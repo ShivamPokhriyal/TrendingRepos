@@ -20,6 +20,8 @@ import com.example.trendingrepo.utils.Utils;
 import com.example.trendingrepo.views.RepoDescriptionView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,6 +45,24 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setRepositories(List<Repository> list) {
         repositories = list;
+    }
+
+    public void sortByStars() {
+        Collections.sort(repositories, new Comparator<Repository>() {
+            @Override
+            public int compare(Repository first, Repository second) {
+                return first.getStars() - second.getStars();
+            }
+        });
+    }
+
+    public void sortByNames() {
+        Collections.sort(repositories, new Comparator<Repository>() {
+            @Override
+            public int compare(Repository first, Repository second) {
+                return first.getProfileName().toUpperCase().compareTo(second.getProfileName().toUpperCase());
+            }
+        });
     }
 
     @NonNull
