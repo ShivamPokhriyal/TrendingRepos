@@ -5,4 +5,5 @@
     <string name="retry">RETRY</string>
     <string name="something_wrong">Something went wrong..</string>
     <string name="alien_block">An alien is probably blocking your signal.</string>
+    <string name="trending">Trending</string>
 </resources>

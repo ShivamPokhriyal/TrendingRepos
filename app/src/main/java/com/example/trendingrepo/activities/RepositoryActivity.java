@@ -2,6 +2,7 @@ package com.example.trendingrepo.activities;
 
 import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -82,6 +83,9 @@ public class RepositoryActivity extends AppCompatActivity {
                 fetchRepositories();
             }
         });
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.toolbar);
     }
 
     @Override

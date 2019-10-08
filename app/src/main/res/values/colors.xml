@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimaryDark">#fff</color>
     <color name="colorAccent">#D81B60</color>
     <color name="textColor">#52575C</color>
     <color name="retryBorderColor">#0a0</color>
     <color name="retryBackgroundColor">#0500cc00</color>
     <color name="retryTextColor">#0a0</color>
+    <color name="toolbarColor">#25282b</color>
+    <color name="black">#000</color>
 </resources>
