@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.trendingrepo.R;
 import com.example.trendingrepo.adapters.RepositoryAdapter;
@@ -44,6 +47,9 @@ public class RepositoryActivity extends AppCompatActivity {
     private int savedPosition;
     private SortType sort = SortType.UNDEFINED;
 
+    private View retryLayout;
+    private Button retryButton;
+
     private static final String LIST_SCROLL_POSITION = "position";
     private static final String LIST_EXPANDED_POSITION = "expandedPosition";
     private static final String LIST_SORT_SELECTED = "sortSelected";
@@ -52,6 +58,8 @@ public class RepositoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repository);
+        retryLayout = findViewById(R.id.retry_layout);
+        retryButton = retryLayout.findViewById(R.id.retry_button);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
         recyclerView = findViewById(R.id.repo_list);
         recyclerView.setHasFixedSize(true);
@@ -68,6 +76,12 @@ public class RepositoryActivity extends AppCompatActivity {
             adapter.setSelectedItem(savedInstanceState.getInt(LIST_EXPANDED_POSITION));
         }
         fetchRepositories();
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchRepositories();
+            }
+        });
     }
 
     @Override
@@ -106,6 +120,9 @@ public class RepositoryActivity extends AppCompatActivity {
         new FetchRepositoryTask(this, new FetchRepositoryTask.Delegate() {
             @Override
             public void onSuccess(List<Repository> repos) {
+                recyclerView.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+                retryLayout.setVisibility(View.GONE);
                 adapter.setRepositories(repos);
                 switch (sort) {
                     case NAME:
@@ -127,6 +144,7 @@ public class RepositoryActivity extends AppCompatActivity {
             public void onFailure() {
                 recyclerView.setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.GONE);
+                retryLayout.setVisibility(View.VISIBLE);
             }
         }).execute();
     }

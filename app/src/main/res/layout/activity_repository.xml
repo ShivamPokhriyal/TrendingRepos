@@ -21,4 +21,11 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <include
+        android:visibility="gone"
+        android:id="@+id/retry_layout"
+        layout="@layout/retry_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

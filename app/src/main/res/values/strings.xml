@@ -2,4 +2,7 @@
     <string name="app_name">TrendingRepo</string>
     <string name="sort_by_stars">Sort by stars</string>
     <string name="sort_by_name">Sort by name</string>
+    <string name="retry">RETRY</string>
+    <string name="something_wrong">Something went wrong..</string>
+    <string name="alien_block">An alien is probably blocking your signal.</string>
 </resources>

@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="textColor">#52575C</color>
+    <color name="retryBorderColor">#0a0</color>
+    <color name="retryBackgroundColor">#0500cc00</color>
+    <color name="retryTextColor">#0a0</color>
 </resources>
