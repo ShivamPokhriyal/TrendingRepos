@@ -66,6 +66,16 @@ public class RepositoryDBService {
         }
     }
 
+    public void deleteAllRepositories() {
+        try {
+            dbHelper.getWritableDatabase().execSQL("DELETE from " + DBHelper.REPO_TABLE_NAME);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
+    }
+
     private Repository getRepository(Cursor cursor) {
         Repository repository = new Repository();
         repository.setProfileName(cursor.getString(cursor.getColumnIndex(DBHelper.AUTHOR)));

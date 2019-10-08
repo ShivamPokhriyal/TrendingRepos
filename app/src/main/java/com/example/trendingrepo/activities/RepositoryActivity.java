@@ -1,5 +1,7 @@
 package com.example.trendingrepo.activities;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -12,14 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.trendingrepo.R;
 import com.example.trendingrepo.adapters.RepositoryAdapter;
 import com.example.trendingrepo.models.Repository;
-import com.example.trendingrepo.services.FetchRepositoryTask;
+import com.example.trendingrepo.services.RepositoryService;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class RepositoryActivity extends AppCompatActivity {
@@ -83,6 +84,13 @@ public class RepositoryActivity extends AppCompatActivity {
                 fetchRepositories();
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                fetchRepositoriesFromServer();
+            }
+        });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.toolbar);
@@ -121,13 +129,57 @@ public class RepositoryActivity extends AppCompatActivity {
     }
 
     private void fetchRepositories() {
-        new FetchRepositoryTask(this, new FetchRepositoryTask.Delegate() {
-            @Override
-            public void onSuccess(List<Repository> repos) {
-                recyclerView.setVisibility(View.VISIBLE);
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
-                retryLayout.setVisibility(View.GONE);
-                adapter.setRepositories(repos);
+        new FetchRepositoryTask(this, false, recyclerView, swipeRefreshLayout, retryLayout, adapter).execute();
+    }
+
+    private void fetchRepositoriesFromServer() {
+        new FetchRepositoryTask(this, true, recyclerView, swipeRefreshLayout, retryLayout, adapter).execute();
+    }
+
+    class FetchRepositoryTask extends AsyncTask<Void, Void, List<Repository>> {
+
+        private RepositoryService repositoryService;
+        private boolean isUpdateCall;
+
+        private WeakReference<RecyclerView> recyclerViewWeakReference;
+        private WeakReference<SwipeRefreshLayout> swipeRefreshLayoutWeakReference;
+        private WeakReference<View> retryLayoutWeakReference;
+        private WeakReference<RepositoryAdapter> adapterWeakReference;
+
+        public FetchRepositoryTask(Context context, boolean isUpdateCall, RecyclerView recyclerView, SwipeRefreshLayout swipeRefreshLayout, View retryLayout, RepositoryAdapter adapter) {
+            repositoryService = new RepositoryService(context);
+            this.isUpdateCall = isUpdateCall;
+            recyclerViewWeakReference = new WeakReference<>(recyclerView);
+            swipeRefreshLayoutWeakReference = new WeakReference<>(swipeRefreshLayout);
+            retryLayoutWeakReference = new WeakReference<>(retryLayout);
+            adapterWeakReference = new WeakReference<>(adapter);
+        }
+
+        @Override
+        protected List<Repository> doInBackground(Void... voids) {
+            try {
+                if (isUpdateCall) {
+                    return repositoryService.fetchAndUpdateRepositories();
+                } else {
+                    return repositoryService.getAllRepositories();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Repository> result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                setVisibility(View.VISIBLE, View.GONE);
+                return;
+            }
+            setVisibility(View.GONE, View.VISIBLE);
+            if (adapterWeakReference != null && adapterWeakReference.get() != null) {
+                RepositoryAdapter adapter = adapterWeakReference.get();
+                adapter.setRepositories(result);
                 switch (sort) {
                     case NAME:
                         adapter.sortByNames();
@@ -140,16 +192,28 @@ public class RepositoryActivity extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
                 if (savedPosition >= 0 && savedPosition < adapter.getItemCount()) {
-                    recyclerView.scrollToPosition(savedPosition);
+                    if (recyclerViewWeakReference != null && recyclerViewWeakReference.get() != null) {
+                        recyclerViewWeakReference.get().scrollToPosition(savedPosition);
+                    }
                 }
             }
+        }
 
-            @Override
-            public void onFailure() {
-                recyclerView.setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.GONE);
-                retryLayout.setVisibility(View.VISIBLE);
+        private void setVisibility(int retryVisibilty, int viewVisibility) {
+            if (swipeRefreshLayoutWeakReference != null && swipeRefreshLayoutWeakReference.get() != null) {
+                swipeRefreshLayoutWeakReference.get().setRefreshing(false);
+                swipeRefreshLayoutWeakReference.get().setVisibility(viewVisibility);
             }
-        }).execute();
+
+            if (recyclerViewWeakReference != null && recyclerViewWeakReference.get() != null) {
+                recyclerViewWeakReference.get().setVisibility(viewVisibility);
+            }
+
+            if (retryLayoutWeakReference != null && retryLayoutWeakReference.get() != null) {
+                retryLayoutWeakReference.get().setVisibility(retryVisibilty);
+            }
+        }
     }
+
+
 }

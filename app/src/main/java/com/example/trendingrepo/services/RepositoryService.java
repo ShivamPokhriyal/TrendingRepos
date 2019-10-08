@@ -39,4 +39,14 @@ public class RepositoryService {
         return repositories;
     }
 
+    public List<Repository> fetchAndUpdateRepositories() {
+        Repository[] repos = repositoryNetworkService.fetchRepositories();
+        if (repos != null) {
+            repositoryDBService.deleteAllRepositories();
+            repositoryDBService.addRepositories(repos);
+            return Arrays.asList(repos);
+        }
+        return repositoryDBService.getLocalRepositories();
+    }
+
 }
