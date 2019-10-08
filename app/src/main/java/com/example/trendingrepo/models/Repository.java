@@ -19,6 +19,7 @@ public class Repository implements Serializable {
     private int forks;
     private String language;
     private String languageColor;
+    private String url;
 
     public String getProfileName() {
         return profileName;
@@ -84,6 +85,14 @@ public class Repository implements Serializable {
         this.languageColor = languageColor;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return "Repository{" +
@@ -95,6 +104,7 @@ public class Repository implements Serializable {
                 ", forks=" + forks +
                 ", language='" + language + '\'' +
                 ", languageColor='" + languageColor + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

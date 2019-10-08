@@ -1,39 +1,41 @@
 package com.example.trendingrepo.services;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.trendingrepo.models.Repository;
 import com.example.trendingrepo.networkUtils.HttpRequestUtils;
-import com.example.trendingrepo.networkUtils.RepositoryNetworkService;
 import com.example.trendingrepo.utils.Utils;
+
+import java.util.List;
 
 /**
  * $ |-| ! V @ M
  * Created by Shivam Pokhriyal on 2019-10-08.
  */
-public class FetchRepositoryTask extends AsyncTask<Void, Void, Repository[]> {
+public class FetchRepositoryTask extends AsyncTask<Void, Void, List<Repository>> {
 
     public interface Delegate {
-        void onSuccess(Repository[] questions);
+        void onSuccess(List<Repository> questions);
         void onFailure();
     }
 
     private HttpRequestUtils requestUtils;
     private Delegate delegate;
-    private RepositoryNetworkService repositoryNetworkService;
+    private RepositoryService repositoryService;
 
     private static final String TAG = "FetchRepositoryTask";
 
-    public FetchRepositoryTask(Delegate delegate) {
+    public FetchRepositoryTask(Context context, Delegate delegate) {
         requestUtils = new HttpRequestUtils();
-        repositoryNetworkService = new RepositoryNetworkService();
+        repositoryService = new RepositoryService(context);
         this.delegate = delegate;
     }
 
     @Override
-    protected Repository[] doInBackground(Void... voids) {
+    protected List<Repository> doInBackground(Void... voids) {
         try {
-            return repositoryNetworkService.fetchRepositories();
+            return repositoryService.getAllRepositories();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,7 +43,7 @@ public class FetchRepositoryTask extends AsyncTask<Void, Void, Repository[]> {
     }
 
     @Override
-    protected void onPostExecute(Repository[] result) {
+    protected void onPostExecute(List<Repository> result) {
         super.onPostExecute(result);
         if (delegate == null) {
             Utils.printLog(TAG, "Delegate is null");

@@ -3,6 +3,8 @@ package com.example.trendingrepo.networkUtils;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.trendingrepo.utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class HttpRequestUtils {
 
     public String getResponse(String urlString, String tag) {
 
-        Log.d(TAG, tag + " Calling url: " + urlString);
+        Utils.printLog(TAG, tag + " Calling url: " + urlString);
 
         HttpURLConnection connection = null;
         URL url;
@@ -45,7 +47,7 @@ public class HttpRequestUtils {
                 InputStream inputStream = connection.getInputStream();
                 br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             } else {
-                Log.d(TAG, tag + " Response code for getResponse is  :" + connection.getResponseCode());
+                Utils.printLog(TAG, tag + " Response code for getResponse is  :" + connection.getResponseCode());
             }
 
             StringBuilder sb = new StringBuilder();
@@ -63,10 +65,10 @@ public class HttpRequestUtils {
                     br.close();
                 }
             }
-            Log.d(TAG, tag + " Response :" + sb.toString());
+            Utils.printLog(TAG, tag + " Response :" + sb.toString());
             return sb.toString();
         } catch (ConnectException e) {
-            Log.d(TAG, tag + " failed to connect Internet is not working");
+            Utils.printLog(TAG, tag + " failed to connect Internet is not working");
         } catch (Exception e) {
             e.printStackTrace();
         } catch (Throwable e) {
