@@ -68,7 +68,7 @@ public class RepositoryDBService {
 
     private Repository getRepository(Cursor cursor) {
         Repository repository = new Repository();
-        repository.setProfileImage(cursor.getString(cursor.getColumnIndex(DBHelper.AUTHOR)));
+        repository.setProfileName(cursor.getString(cursor.getColumnIndex(DBHelper.AUTHOR)));
         repository.setRepoName(cursor.getString(cursor.getColumnIndex(DBHelper.REPO_NAME)));
         repository.setProfileImage(cursor.getString(cursor.getColumnIndex(DBHelper.AVATAR)));
         repository.setDescription(cursor.getString(cursor.getColumnIndex(DBHelper.DESCRIPTION)));

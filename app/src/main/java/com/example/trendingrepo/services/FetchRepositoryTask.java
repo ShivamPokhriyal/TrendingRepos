@@ -16,7 +16,7 @@ import java.util.List;
 public class FetchRepositoryTask extends AsyncTask<Void, Void, List<Repository>> {
 
     public interface Delegate {
-        void onSuccess(List<Repository> questions);
+        void onSuccess(List<Repository> repos);
         void onFailure();
     }
 

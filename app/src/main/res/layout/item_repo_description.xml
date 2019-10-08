@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/repo_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textAlignment="gravity"
+        android:textDirection="locale"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        android:textColor="#52575C"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/repo_description_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/repo_description"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal">
+        
+        <View
+            android:id="@+id/repo_language_image"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:scaleType="center"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_view"/>
+
+        <TextView
+            android:id="@+id/repo_language_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:textSize="12sp"
+            android:maxLength="15"
+            android:textColor="#52575C"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:id="@+id/repo_star_image"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:src="@drawable/star_yellow_16"
+            android:layout_marginLeft="16dp"/>
+
+        <TextView
+            android:id="@+id/repo_star_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:textColor="#52575C"
+            android:layout_marginLeft="4dp"/>
+
+        <ImageView
+            android:id="@+id/repo_fork_image"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center"
+            android:src="@drawable/fork_black_16"/>
+
+        <TextView
+            android:id="@+id/repo_fork_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:textColor="#52575C"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
