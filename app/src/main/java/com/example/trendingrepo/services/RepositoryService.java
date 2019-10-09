@@ -27,7 +27,7 @@ public class RepositoryService {
 
     public List<Repository> getAllRepositories() {
         List<Repository> repositories = repositoryDBService.getLocalRepositories();
-        if (repositories == null) {
+        if (repositories == null || repositories.size() == 0) {
             /// Fetch and update from server
             Utils.printLog(TAG, "Fetching repositories from server and updating local db");
             Repository[] repos = repositoryNetworkService.fetchRepositories();
@@ -41,7 +41,7 @@ public class RepositoryService {
 
     public List<Repository> fetchAndUpdateRepositories() {
         Repository[] repos = repositoryNetworkService.fetchRepositories();
-        if (repos != null) {
+        if (repos != null && repos.length > 0) {
             repositoryDBService.deleteAllRepositories();
             repositoryDBService.addRepositories(repos);
             return Arrays.asList(repos);
