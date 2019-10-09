@@ -2,7 +2,6 @@ package com.example.trendingrepo.activities;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -77,6 +76,7 @@ public class RepositoryActivity extends AppCompatActivity {
             sort = SortType.getSortType(savedInstanceState.getInt(LIST_SORT_SELECTED));
             adapter.setSelectedItem(savedInstanceState.getInt(LIST_EXPANDED_POSITION));
         }
+        swipeRefreshLayout.setRefreshing(true);
         fetchRepositories();
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
