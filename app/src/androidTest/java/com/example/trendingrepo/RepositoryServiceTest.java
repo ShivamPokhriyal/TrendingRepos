@@ -44,32 +44,34 @@ public class RepositoryServiceTest {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         MockitoAnnotations.initMocks(this);
         repositoryService = new RepositoryService(context);
+        repositoryService.setDbService(repositoryDBService);
+        repositoryService.setNetworkService(repositoryNetworkService);
     }
 
     @Test
     public void testGetAllRepos_WhenLocalReturnsNull_ShouldCallNetworkService() {
-        Mockito.doNothing().when(repositoryNetworkService.fetchRepositories());
+        when(repositoryNetworkService.fetchRepositories()).thenReturn(null);
         when(repositoryDBService.getLocalRepositories()).thenReturn(null);
-        repositoryService.getAllRepositories();
-        Mockito.verify(repositoryNetworkService.fetchRepositories(), times(1));
+        List<Repository> repos = repositoryService.getAllRepositories();
+        Mockito.verify(repositoryNetworkService, times(1)).fetchRepositories();
     }
 
     @Test
     public void testGetAllRepos_WhenLocalReturnsEmpty_ShouldCallNetworkService() {
-        Mockito.doNothing().when(repositoryNetworkService.fetchRepositories());
+        Mockito.when(repositoryNetworkService.fetchRepositories()).thenReturn(null);
         when(repositoryDBService.getLocalRepositories()).thenReturn(new ArrayList<Repository>());
         repositoryService.getAllRepositories();
-        Mockito.verify(repositoryNetworkService.fetchRepositories(), times(1));
+        Mockito.verify(repositoryNetworkService, times(1)).fetchRepositories();
     }
 
     @Test
     public void testGetAllRepos_WhenLocalReturnsRepos_ShouldNotCallNetworkService() {
-        Mockito.doNothing().when(repositoryNetworkService.fetchRepositories());
+        Mockito.when(repositoryNetworkService.fetchRepositories()).thenReturn(null);
         List<Repository> repos = new ArrayList<>();
         repos.add(new Repository());
         when(repositoryDBService.getLocalRepositories()).thenReturn(repos);
         repositoryService.getAllRepositories();
-        Mockito.verify(repositoryNetworkService.fetchRepositories(), times(0));
+        Mockito.verify(repositoryNetworkService, times(0)).fetchRepositories();
     }
 
     @Test
@@ -79,4 +81,13 @@ public class RepositoryServiceTest {
         repositoryService.fetchAndUpdateRepositories();
         Mockito.verify(repositoryDBService, times(0)).deleteAllRepositories();
     }
+
+    @Test
+    public void testUpdateRepos_WhenServerReturnsRepos_ShouldUpdateLocalDB() {
+        Mockito.doNothing().when(repositoryDBService).deleteAllRepositories();
+        when(repositoryNetworkService.fetchRepositories()).thenReturn(null);
+        repositoryService.fetchAndUpdateRepositories();
+        Mockito.verify(repositoryDBService, times(0)).deleteAllRepositories();
+    }
+
 }

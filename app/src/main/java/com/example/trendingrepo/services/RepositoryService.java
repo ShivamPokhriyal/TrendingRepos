@@ -1,6 +1,8 @@
 package com.example.trendingrepo.services;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
+
 import com.example.trendingrepo.dbUtils.RepositoryDBService;
 import com.example.trendingrepo.models.Repository;
 import com.example.trendingrepo.networkUtils.RepositoryNetworkService;
@@ -23,6 +25,16 @@ public class RepositoryService {
     public RepositoryService(Context context) {
         repositoryDBService = new RepositoryDBService(context);
         repositoryNetworkService = new RepositoryNetworkService();
+    }
+
+    @VisibleForTesting
+    public void setDbService(RepositoryDBService service) {
+        repositoryDBService = service;
+    }
+
+    @VisibleForTesting
+    public void setNetworkService(RepositoryNetworkService service) {
+        repositoryNetworkService = service;
     }
 
     public List<Repository> getAllRepositories() {
